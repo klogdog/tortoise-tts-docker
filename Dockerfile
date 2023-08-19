@@ -1,5 +1,5 @@
 # Use an official Python runtime as a parent image
-FROM nvidia/cuda:11.7.0-base-ubuntu20.04
+FROM nvidia/cuda:11.7.1-base-ubuntu20.04
 
 # Set the working directory
 WORKDIR /app
@@ -20,7 +20,7 @@ RUN git clone https://github.com/152334H/tortoise-tts-fast.git /app/tortoise-tts
 WORKDIR /app/tortoise-tts-fast
 
 # Create the Conda environment
-RUN conda create -n ttts-fast python=3.8 && \
+RUN conda create -n ttts-fast python=3.9 && \
     echo "source activate ttts-fast" > ~/.bashrc
 ENV PATH /miniconda/envs/ttts-fast/bin:$PATH
 
@@ -28,7 +28,8 @@ ENV PATH /miniconda/envs/ttts-fast/bin:$PATH
 SHELL ["conda", "run", "-n", "ttts-fast", "/bin/bash", "-c"]
 
 # Install the necessary packages
-RUN conda install -y pytorch==1.13.1 torchvision==0.14.1 torchaudio==0.13.1 -c pytorch -c nvidia && \
+RUN conda install -y pytorch torchvision torchaudio -c pytorch -c nvidia && \
+    conda install transformers=4.29.2 && \
     conda install -c anaconda gdbm && \
     pip install -e . && \
     pip install git+https://github.com/152334H/BigVGAN.git && \
